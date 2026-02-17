@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ Arrays in DSA</title>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            /* Midnight Peacock Theme (Mayur) */
+            --bg-color: #022c22;
+            /* Deep Emerald Green */
+
+            --surface-color: rgba(20, 184, 166, 0.05);
+            /* Teal Tint */
+            --surface-hover: rgba(20, 184, 166, 0.1);
+            --border-color: rgba(45, 212, 191, 0.3);
+            /* Teal Border */
+
+            /* Peacock Accents */
+            --accent-primary: #2dd4bf;
+            /* Teal / Cyan */
+            --accent-secondary: #facc15;
+            /* Beak Gold */
+            --accent-glow: rgba(45, 212, 191, 0.3);
+            /* Teal Glow */
+
+            --text-heading: #f0fdfa;
+            /* Mint Cream */
+            --text-body: #ccfbf1;
+            /* Soft Azure */
+            --code-bg: #0f172a;
+            /* Deep Navy Blue */
+
+            --card-radius: 24px;
+        }
+
+        /* 3D Space Setup */
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-body);
+            line-height: 1.7;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- PARALLAX BACKGROUND STYLES START --- */
+        #parallax-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            /* Behind content */
+            overflow: hidden;
+            background-color: var(--bg-color);
+            /* Peacock Feather Gradient Mesh */
+            background-image:
+                radial-gradient(circle at 0% 0%, rgba(45, 212, 191, 0.2) 0%, transparent 50%),
+                /* Teal Top-Left */
+                radial-gradient(circle at 100% 100%, rgba(37, 99, 235, 0.2) 0%, transparent 50%),
+                /* Royal Blue Bot-Right */
+                radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 60%);
+            /* Purple Center */
+            /* Mysterious & Elegant */
+            background-size: 100% 100%;
+            pointer-events: none;
+        }
+
+        .code-element {
+            position: absolute;
+            color: rgba(139, 92, 246, 0.1);
+            /* Reduced opacity (0.2 -> 0.1) */
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: bold;
+            user-select: none;
+            will-change: transform;
+            transition: transform 0.1s linear;
+            text-shadow: 0 0 5px rgba(139, 92, 246, 0.2);
+            /* Reduced glow (8px -> 5px, 0.3 -> 0.2) */
+        }
+
+        .code-element.accent {
+            color: rgba(219, 39, 119, 0.1);
+            /* Reduced opacity */
+            text-shadow: 0 0 5px rgba(219, 39, 119, 0.25);
+            /* Reduced glow */
+        }
+
+        /* Constant Floating Animation */
+        @keyframes floatAnim {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+        }
+
+        .floating {
+            animation: floatAnim 6s ease-in-out infinite;
+        }
+
+        /* --- PARALLAX BACKGROUND STYLES END --- */
+
+        /* Typography */
+        h1,
+        h2,
+        h3 {
+            color: var(--text-heading);
+            font-weight: 700;
+        }
+
+        h1 {
+            font-size: clamp(3rem, 6vw, 5rem);
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: fadeZoomIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        h2::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-primary);
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            color: #d1d5db;
+            margin: 1.5rem 0 1rem;
+        }
+
+        /* Layout */
+        .wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 6rem 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 5px;
+            border: 2px solid var(--bg-color);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-primary);
+        }
+
+        /* Animated Gradient Border - REMOVED (Simplification) */
+        .topic-card {
+            position: relative;
+            background: var(--surface-color);
+            background-clip: padding-box;
+            border: 1px solid var(--border-color);
+            /* Simple border */
+            border-radius: var(--card-radius);
+            padding: 3rem;
+            margin-bottom: 3rem;
+            transition: all 0.4s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            animation: fadeZoomIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        /* Removed ::before pseudo-element for gradient border */
+
+        .topic-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-primary);
+            /* Simple color change */
+            box-shadow: 0 30px 50px -10px rgba(0, 0, 0, 0.5),
+                0 0 20px rgba(139, 92, 246, 0.2);
+        }
+
+        /* Copy Button Styles */
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #ccc;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            opacity: 0;
+        }
+
+        pre:hover .copy-btn {
+            opacity: 1;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            margin-top: 1rem;
+        }
+
+        .quiz-option {
+            display: block;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .quiz-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .quiz-option.correct {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid #22c55e;
+            color: #86efac;
+        }
+
+        .quiz-option.incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+        }
+
+        @keyframes fadeZoomIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Staggered Animation Delays */
+        .topic-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .topic-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .topic-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .topic-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .topic-card:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+
+        /* Grid Layout */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* Code Blocks - Sleek Dark + 3D TILT */
+        pre {
+            background: var(--code-bg);
+            padding: 1.5rem;
+            border-radius: 16px;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin: 1rem 0;
+            position: relative;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            /* Depth shadow */
+            transition: transform 0.1s ease-out, box-shadow 0.2s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        /* Hover Effect for 3D Feel */
+        pre:hover {
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7), 0 0 20px var(--accent-glow);
+            z-index: 10;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            color: #d4d4d4;
+            font-size: 0.9rem;
+            transform: translateZ(20px);
+            /* Pop text out */
+            display: block;
+        }
+
+        /* Syntax Colors - Pastel/Neon */
+        .kwd {
+            color: #c4b5fd;
+        }
+
+        .type {
+            color: #fca5a5;
+        }
+
+        .str {
+            color: #86efac;
+        }
+
+        .fn {
+            color: #93c5fd;
+        }
+
+        .com {
+            color: #52525b;
+            font-style: italic;
+        }
+
+        .num {
+            color: #fde047;
+        }
+
+        .def {
+            color: #c4b5fd;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            background: rgba(139, 92, 246, 0.1);
+            color: #d8b4fe;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            margin-left: 0.75rem;
+            vertical-align: middle;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.9rem;
+        }
+
+        /* Playground Specific */
+        .playground-card {
+            border: 1px solid var(--accent-primary);
+            box-shadow: 0 0 40px -10px var(--accent-glow);
+        }
+
+        .compiler-wrapper {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- 5. 3D Drawer Effect (Characteristics) --- */
+        .drawer-container {
+            perspective: 1000px;
+        }
+
+        .drawer-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transform-style: preserve-3d;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            /* Bouncy */
+            transform: rotateX(10deg) translateZ(-20px);
+            /* Tilted in */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .drawer-card::before {
+            /* Handle */
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -10px;
+            width: 6px;
+            height: 40px;
+            background: var(--accent-primary);
+            transform: translateY(-50%);
+            border-radius: 4px;
+        }
+
+        .drawer-card:hover {
+            transform: rotateX(0deg) translateZ(20px) scale(1.02);
+            /* Pull out */
+            background: var(--surface-hover);
+            border-color: var(--accent-primary);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        /* --- 6. 3D Matrix Cube --- */
+        .matrix-scene {
+            width: 200px;
+            height: 200px;
+            perspective: 800px;
+            margin: 2rem auto;
+        }
+
+        .matrix-grid {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotateGrid 10s linear infinite;
+        }
+
+        .matrix-cell {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid var(--accent-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono';
+            font-weight: bold;
+            box-shadow: 0 0 10px var(--accent-glow);
+            transition: transform 0.3s;
+        }
+
+        .matrix-cell:hover {
+            background: var(--accent-primary);
+            color: black;
+            transform: scale(1.2) translateZ(10px);
+        }
+
+        @keyframes rotateGrid {
+            0% {
+                transform: rotateX(20deg) rotateY(0deg);
+            }
+
+            100% {
+                transform: rotateX(20deg) rotateY(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .wrapper {
+                padding: 4rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 3rem;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .topic-card {
+                padding: 2rem;
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Parallax Background Container -->
+    <div id="parallax-bg"></div>
+
+    <div class="wrapper">
+        <header>
+            <h1>C++ Arrays in DSA</h1>
+            <p style="color: #94a3b8; font-size: 1.2rem;">Master Data Structures with Clarity and Style</p>
+        </header>
+
+        <!-- Topic 1: Definition -->
+        <section class="topic-card">
+            <h2>1. What is an Array?</h2>
+            <div class="grid-2">
+                <div>
+                    <p>An array is a data structure used to store <strong>multiple values</strong> of the same data type
+                        in a single variable. Instead of creating many separate variables (<code>a, b, c</code>), you
+                        use one.</p>
+                    <br>
+                    <h3>Real-Life Analogy 🥚</h3>
+                    <p>Think of an array like an <strong>egg tray</strong>:</p>
+                    <ul style="list-style: none; padding: 0; color: #cbd5e1;">
+                        <li>🔹 <strong>Tray slots:</strong> Represent the <em>index</em>.</li>
+                        <li>🔹 <strong>Eggs:</strong> Represent the <em>elements</em>.</li>
+                        <li>🔹 <strong>Same type:</strong> You only store eggs (not rocks).</li>
+                        <li>🔹 <strong>Fixed size:</strong> A tray has a fixed number of slots.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Why Use Arrays?</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 0.5rem;">✅ <strong>Store Many Values:</strong> Keep related data
+                            together.</li>
+                        <li style="margin-bottom: 0.5rem;">✅ <strong>Fast Access:</strong> Random access using index
+                            <code>arr[i]</code>.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">✅ <strong>Clean Code:</strong> Avoid chaos of variables.
+                        </li>
+                        <li>✅ <strong>Sequential Memory:</strong> Optimized for CPU Cache.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 2: Characteristics -->
+        <section class="topic-card">
+            <h2>2. Characteristics of Arrays</h2>
+            <div class="grid-2">
+                <div>
+                    <div class="drawer-container">
+                        <div class="drawer-card">
+                            <strong>📏 Fixed Size</strong>
+                            <p style="font-size: 0.9rem; margin:0; opacity: 0.7;">Defined at creation. Cannot change.
+                            </p>
+                        </div>
+                        <div class="drawer-card">
+                            <strong>🔢 Indexed</strong>
+                            <p style="font-size: 0.9rem; margin:0; opacity: 0.7;">Access by position (0, 1, 2...).</p>
+                        </div>
+                        <div class="drawer-card">
+                            <strong>👯 Same Data Type</strong>
+                            <p style="font-size: 0.9rem; margin:0; opacity: 0.7;">All int, or all float.</p>
+                        </div>
+                        <div class="drawer-card">
+                            <strong>💾 Contiguous Memory</strong>
+                            <p style="font-size: 0.9rem; margin:0; opacity: 0.7;"> stored side-by-side in RAM.</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3>Visualizing Memory</h3>
+                    <pre><code><span class="com">// int arr[4] = {10, 20, 30, 40};</span>
+Index:   [0]    [1]    [2]    [3]
+Value:    10     20     30     40
+Address: 100    104    108    112
+<span class="com">// (Addresses increase by 4 bytes (int))</span></code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 3: Types of Arrays -->
+        <section class="topic-card">
+            <h2>3. Types of Arrays</h2>
+
+            <h3>3.1 One-Dimensional Array (1D)</h3>
+            <p>A simple list of elements.</p>
+            <div class="grid-2">
+                <div>
+                    <strong>Declaration & Init</strong>
+                    <pre><code><span class="com">// 1. Full Init</span>
+<span class="type">int</span> arr[<span class="num">5</span>] = {10, 20, 30, 40, 50};
+
+<span class="com">// 2. Partial (Rest are 0)</span>
+<span class="type">int</span> coins[<span class="num">5</span>] = {1, 2}; 
+
+<span class="com">// 3. Inferred Size</span>
+<span class="type">int</span> nums[] = {1, 2, 3};</code></pre>
+                </div>
+                <div>
+                    <strong>Accessing Elements</strong>
+                    <pre><code><span class="type">cout</span> &lt;&lt; arr[<span class="num">0</span>]; <span class="com">// 10</span>
+arr[<span class="num">2</span>] = <span class="num">99</span>;    <span class="com">// Update 3rd</span>
+<span class="type">cin</span> >> arr[<span class="num">3</span>];  <span class="com">// User Input</span></code></pre>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 2rem;">3.2 Two-Dimensional Array (2D)</h3>
+            <p>An array of arrays (Rows & Columns). Used for matrices, tables, grids.</p>
+            <div class="grid-2">
+                <pre><code><span class="type">int</span> matrix[<span class="num">2</span>][<span class="num">3</span>] = {
+    {1, 2, 3},  <span class="com">// Row 0</span>
+    {4, 5, 6}   <span class="com">// Row 1</span>
+};</code></pre>
+                <!-- 3D Matrix Cube Visual -->
+                <div class="matrix-scene">
+                    <div class="matrix-grid">
+                        <!-- Front Face (Row 0) -->
+                        <div class="matrix-cell" style="transform: translate3d(-35px, -35px, 30px);">1</div>
+                        <div class="matrix-cell" style="transform: translate3d(35px, -35px, 30px);">2</div>
+                        <div class="matrix-cell" style="transform: translate3d(105px, -35px, 30px);">3</div>
+
+                        <!-- Back Face (Row 1) - Shifted back -->
+                        <div class="matrix-cell" style="transform: translate3d(-35px, 35px, -30px);">4</div>
+                        <div class="matrix-cell" style="transform: translate3d(35px, 35px, -30px);">5</div>
+                        <div class="matrix-cell" style="transform: translate3d(105px, 35px, -30px);">6</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 2rem;">3.3 Multi-Dimensional Array</h3>
+            <p>3D, 4D, etc. Used in complex simulations, 3D graphics.</p>
+            <pre><code><span class="type">int</span> cube[<span class="num">2</span>][<span class="num">2</span>][<span class="num">2</span>]; <span class="com">// 3 Dimensions</span></code></pre>
+        </section>
+
+        <!-- Topic 4: Basic Operations -->
+        <section class="topic-card">
+            <h2>4. Basic Operations</h2>
+            <div class="grid-2">
+                <div>
+                    <h3>1. Traversal</h3>
+                    <p>Visiting every element.</p>
+                    <pre><code><span class="kwd">for</span>(<span class="type">int</span> i=0; i&lt;n; i++) {
+    <span class="type">cout</span> &lt;&lt; arr[i] &lt;&lt; " ";
+}</code></pre>
+                </div>
+                <div>
+                    <h3>2. Input / Output</h3>
+                    <p>Taking user input.</p>
+                    <pre><code><span class="kwd">for</span>(<span class="type">int</span> i=0; i&lt;n; i++) {
+    <span class="type">cin</span> >> arr[i];
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="grid-2" style="margin-top: 2rem;">
+                <div>
+                    <h3>3. Searching</h3>
+                    <p><strong>Linear Search:</strong> Check one by one.<br><strong>Binary Search:</strong> Divide &
+                        Conquer (Sorted only).</p>
+                </div>
+                <div>
+                    <h3>4. Insertion & Deletion</h3>
+                    <p>⚠️ <strong>Costly in Arrays!</strong><br>Requires shifting elements (O(N) time).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 5: Comparison -->
+        <section class="topic-card">
+            <h2>5. Comparisons</h2>
+            <h3>Array vs Variable</h3>
+            <div class="grid-2">
+                <div style="background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 12px;">
+                    <strong>Variable</strong>
+                    <p>Stores 1 value.</p>
+                    <p>Single memory address.</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 12px;">
+                    <strong>Array</strong>
+                    <p>Stores Multiple values.</p>
+                    <p>Block of continuous addresses.</p>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 2rem;">Array vs Vector (C++ STL)</h3>
+            <div class="grid-2">
+                <div>
+                    <strong>Array (<code>int arr[10]</code>)</strong>
+                    <ul style="padding-left: 1rem; color: #cbd5e1;">
+                        <li>❌ Fixed Size</li>
+                        <li>✅ Slightly Faster (Stack)</li>
+                        <li>❌ No built-in methods (size, push)</li>
+                    </ul>
+                </div>
+                <div>
+                    <strong>Vector (<code>vector&lt;int&gt; v</code>)</strong>
+                    <ul style="padding-left: 1rem; color: #cbd5e1;">
+                        <li>✅ Dynamic Size (Grows as needed)</li>
+                        <li>⚠️ Heap memory (Slight overhead)</li>
+                        <li>✅ Rich API (insert, delete, size)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 6: Pros & Cons -->
+        <section class="topic-card">
+            <h2>6. Advantages & Disadvantages</h2>
+            <div class="grid-2">
+                <div>
+                    <h3>✅ Advantages</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>⚡ <strong>Fast Access:</strong> O(1) time complexity.</li>
+                        <li>🧹 <strong>Efficient Usage:</strong> No extra overhead.</li>
+                        <li>🚶 <strong>Cache Friendly:</strong> Sequential memory prevents cache misses.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>❌ Disadvantages</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>🧱 <strong>Fixed Size:</strong> Cannot resize after creation.</li>
+                        <li>🐌 <strong>Slow Insertion/Deletion:</strong> O(N) shifting required.</li>
+                        <li>🗑️ <strong>Memory Waste:</strong> If you declare <code>arr[100]</code> and use 5.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic 7: Common Programs -->
+        <section class="topic-card">
+            <h2>7. Common Array Programs</h2>
+            <p>Practical patterns for solving problems.</p>
+
+            <div class="grid-2">
+                <div>
+                    <strong>1. Finding Max Element</strong>
+                    <pre><code><span class="type">int</span> maxVal = arr[<span class="num">0</span>];
+<span class="kwd">for</span>(<span class="type">int</span> i=1; i&lt;n; i++) {
+    <span class="kwd">if</span>(arr[i] > maxVal) maxVal = arr[i];
+}</code></pre>
+                </div>
+                <div>
+                    <strong>2. Calculate Sum</strong>
+                    <pre><code><span class="type">int</span> sum = <span class="num">0</span>;
+<span class="kwd">for</span>(<span class="type">int</span> i=0; i&lt;n; i++) {
+    sum += arr[i];
+}</code></pre>
+                </div>
+                <div>
+                    <strong>3. Reverse Array</strong>
+                    <pre><code><span class="type">int</span> L = <span class="num">0</span>, R = n-1;
+<span class="kwd">while</span>(L &lt; R) {
+    <span class="fn">swap</span>(arr[L], arr[R]);
+    L++; R--;
+}</code></pre>
+                </div>
+                <div>
+                    <strong>4. Linear Search</strong>
+                    <pre><code><span class="kwd">for</span>(<span class="type">int</span> i=0; i&lt;n; i++) {
+    <span class="kwd">if</span>(arr[i] == key) <span class="type">cout</span> &lt;&lt; "Found";
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topic: Sorting Algorithms (New) -->
+        <section class="topic-card">
+            <h2>Sorting Algorithms</h2>
+            <p>Organizing data is crucial. Let's visualize <strong>Bubble Sort</strong>, a simple algorithm that
+                repeatedly swaps adjacent elements.</p>
+
+            <div class="grid-2">
+                <div>
+                    <h3>Bubble Sort Code <span class="badge">O(N²)</span></h3>
+                    <pre><code><span class="kwd">for</span>(<span class="type">int</span> i=0; i&lt;n-1; i++) {
+    <span class="kwd">for</span>(<span class="type">int</span> j=0; j&lt;n-i-1; j++) {
+        <span class="kwd">if</span>(arr[j] > arr[j+1]) {
+            <span class="fn">swap</span>(arr[j], arr[j+1]);
+        }
+    }
+}</code></pre>
+                </div>
+
+                <!-- Sorting Visualizer -->
+                <div class="sorting-container">
+                    <h3>Visualizer</h3>
+                    <div id="sort-bars"></div>
+                    <div>
+                        <button onclick="startBubbleSort()" class="action-btn">Start Animation ▶</button>
+                        <button onclick="resetSort()" class="action-btn secondary">Reset ⟳</button>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                .sorting-container {
+                    background: rgba(0, 0, 0, 0.2);
+                    padding: 1.5rem;
+                    border-radius: 16px;
+                    text-align: center;
+                    border: 1px solid var(--border-color);
+                }
+
+                #sort-bars {
+                    display: flex;
+                    justify-content: center;
+                    align-items: flex-end;
+                    height: 150px;
+                    gap: 4px;
+                    margin-bottom: 1rem;
+                }
+
+                .bar {
+                    width: 20px;
+                    background: var(--accent-primary);
+                    border-radius: 4px 4px 0 0;
+                    transition: height 0.2s, background 0.2s;
+                }
+
+                .bar.active {
+                    background: #fca5a5;
+                }
+
+                /* Red for compare */
+                .bar.sorted {
+                    background: #86efac;
+                }
+
+                /* Green for sorted */
+
+                .action-btn {
+                    background: var(--accent-primary);
+                    color: white;
+                    border: none;
+                    padding: 8px 16px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: 600;
+                    margin: 5px;
+                    transition: transform 0.1s;
+                }
+
+                .action-btn:active {
+                    transform: scale(0.95);
+                }
+
+                .action-btn.secondary {
+                    background: rgba(255, 255, 255, 0.1);
+                }
+            </style>
+        </section>
+
+        <!-- Topic: Two Pointer Technique (New) -->
+        <section class="topic-card">
+            <h2>Two Pointer Technique</h2>
+            <p>A powerful strategy to solve problems efficiently (often O(N)) by using two indices usually moving
+                towards each other.</p>
+
+            <div class="grid-2">
+                <div>
+                    <h3>Pattern: "Meet in Middle"</h3>
+                    <p>Used for reversing arrays or checking palindromes.</p>
+                    <pre><code><span class="type">int</span> left = <span class="num">0</span>, right = n-1;
+<span class="kwd">while</span>(left &lt; right) {
+    <span class="fn">process</span>(arr[left], arr[right]);
+    left++; 
+    right--;
+}</code></pre>
+                </div>
+                <div>
+                    <h3>Example: Pair Sum (Sorted)</h3>
+                    <p>Find two numbers that add up to target.</p>
+                    <pre><code><span class="com">// Array MUST be sorted</span>
+<span class="kwd">while</span>(L &lt; R) {
+    <span class="type">int</span> sum = arr[L] + arr[R];
+    <span class="kwd">if</span>(sum == target) <span class="kwd">return</span> <span class="kwd">true</span>;
+    <span class="kwd">else if</span>(sum &lt; target) L++;
+    <span class="kwd">else</span> R--;
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- Topic 6: Interactive Playground -->
+        <section class="topic-card playground-card">
+            <h2>Interactive Playground</h2>
+            <p>Write, compile, and run C++ code here.</p>
+
+            <div class="compiler-wrapper">
+                <iframe frameBorder="0" height="450px"
+                    src="https://onecompiler.com/embed/cpp?theme=dark&hideLanguageSelection=true&code=// Write your C++ code here%0A%23include <iostream>%0Ausing namespace std;%0A%0Aint main() {%0A    int arr[5] = {10, 20, 30, 40, 50};%0A    cout << %22Array Element at index 1: %22 << arr[1];%0A    return 0;%0A}"
+                    width="100%"></iframe>
+            </div>
+        </section>
+
+        <!-- Topic 7: Comprehensive Quiz -->
+        <section class="topic-card">
+            <h2>Knowledge Check 🧠</h2>
+            <p>Test your mastery of C++ Arrays.</p>
+
+            <div class="quiz-wrapper">
+                <!-- Q1 -->
+                <div class="quiz-item">
+                    <p class="question">1. What is the time complexity to access an element by index?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkQuiz(this, false)">A. O(N)</div>
+                        <div class="quiz-option" onclick="checkQuiz(this, true)">B. O(1)</div>
+                        <div class="quiz-option" onclick="checkQuiz(this, false)">C. O(log N)</div>
+                    </div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="quiz-item">
+                    <p class="question">2. What is the index of the first element in a C++ array?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkQuiz(this, false)">A. 1</div>
+                        <div class="quiz-option" onclick="checkQuiz(this, true)">B. 0</div>
+                        <div class="quiz-option" onclick="checkQuiz(this, false)">C. -1</div>
+                    </div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="quiz-item">
+                    <p class="question">3. How are array elements stored in memory?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkQuiz(this, true)">A. Contiguously (Side-by-side)</div>
+                        <div class="quiz-option" onclick="checkQuiz(this, false)">B. Scattered randomly</div>
+                        <div class="quiz-option" onclick="checkQuiz(this, false)">C. Linked via pointers</div>
+                    </div>
+                </div>
+
+                <!-- Q4 -->
+                <div class="quiz-item">
+                    <p class="question">4. Which array type handles its own memory management automatically?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkQuiz(this, false)">A. int arr[10]</div>
+                        <div class="quiz-option" onclick="checkQuiz(this, false)">B. int* arr = new int[10]</div>
+                        <div class="quiz-option" onclick="checkQuiz(this, true)">C. std::vector</div>
+                    </div>
+                </div>
+
+                <!-- Q5 -->
+                <div class="quiz-item">
+                    <p class="question">5. What happens if you access <code>arr[5]</code> in <code>int arr[5]</code>?
+                    </p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkQuiz(this, false)">A. It returns 0</div>
+                        <div class="quiz-option" onclick="checkQuiz(this, true)">B. Undefined Behavior (Garbage/Crash)
+                        </div>
+                        <div class="quiz-option" onclick="checkQuiz(this, false)">C. Compiler Error</div>
+                    </div>
+                </div>
+
+                <!-- Q6 -->
+                <div class="quiz-item">
+                    <p class="question">6. Why are arrays "Cache Friendly"?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkQuiz(this, true)">A. Because of spatial locality</div>
+                        <div class="quiz-option" onclick="checkQuiz(this, false)">B. Because they are small</div>
+                        <div class="quiz-option" onclick="checkQuiz(this, false)">C. They are not cache friendly</div>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                .quiz-item {
+                    margin-bottom: 2rem;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                    padding-bottom: 1.5rem;
+                }
+
+                .quiz-item:last-child {
+                    border-bottom: none;
+                }
+
+                .question {
+                    font-weight: bold;
+                    margin-bottom: 1rem;
+                    color: #e2e8f0;
+                }
+            </style>
+        </section>
+
+        <!-- Summary -->
+        <section class="topic-card summary-card">
+            <h2>Wrap Up</h2>
+            <p>Mastering Static Arrays is the first step. You've learned how to create them, search them, and manipulate
+                them efficiently.</p>
+        </section>
+
+        <!-- --- 7. Enhanced Creator Signature --- -->
+        <footer>
+            <div class="creator-badge">
+                <div class="badge-content">
+                    <div class="dev-logo-small">
+                        &lt; <span style="color:var(--accent-primary)">Y</span> /&gt;
+                    </div>
+                    <div>
+                        <p class="created-by">Created by</p>
+                        <h3 class="name-glitch" data-text="Yash Ranpariya">Yash Ranpariya</h3>
+                        <p class="prn-code">PRN: <span class="prn-value">1272251066</span></p>
+                    </div>
+                </div>
+                <div class="badge-glow"></div>
+            </div>
+
+            <p style="margin-top: 2rem; opacity: 0.5; font-size: 0.8rem;">&copy; 2026 C++ DSA Guide</p>
+        </footer>
+
+        <style>
+            /* --- 7.1 Developer Logo (Header/Badge) --- */
+            .dev-logo-small {
+                font-family: 'JetBrains Mono', monospace;
+                font-weight: 800;
+                font-size: 1.5rem;
+                color: #fff;
+                background: rgba(255, 255, 255, 0.05);
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                border: 1px solid var(--accent-primary);
+                box-shadow: 0 0 15px var(--accent-glow);
+                animation: floatLogo 3s ease-in-out infinite;
+                margin-right: 1.5rem;
+            }
+
+            @keyframes floatLogo {
+
+                0%,
+                100% {
+                    transform: translateY(0);
+                }
+
+                50% {
+                    transform: translateY(-5px);
+                }
+            }
+
+            /* --- 7.2 Holographic Badge --- */
+            .creator-badge {
+                position: relative;
+                display: inline-block;
+                margin-top: 4rem;
+                perspective: 1000px;
+            }
+
+            .badge-content {
+                display: flex;
+                align-items: center;
+                background: rgba(255, 255, 255, 0.03);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                padding: 1.5rem 2.5rem;
+                border-radius: 20px;
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+                transform-style: preserve-3d;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                overflow: hidden;
+            }
+
+            .badge-content::before {
+                /* Shimmer Effect */
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+                transition: 0.5s;
+                transform: skewX(-25deg);
+            }
+
+            .creator-badge:hover .badge-content::before {
+                left: 100%;
+                transition: 0.7s;
+            }
+
+            .creator-badge:hover .badge-content {
+                transform: translateY(-5px) rotateX(5deg);
+                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 20px var(--accent-glow);
+                border-color: var(--accent-primary);
+            }
+
+            .created-by {
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                color: #94a3b8;
+                margin-bottom: 0.2rem;
+            }
+
+            .name-glitch {
+                font-family: 'Outfit', sans-serif;
+                font-size: 1.5rem;
+                font-weight: 700;
+                margin: 0;
+                background: linear-gradient(90deg, #fff, var(--accent-primary));
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+                position: relative;
+            }
+
+            .prn-code {
+                font-family: 'JetBrains Mono', monospace;
+                color: #cbd5e1;
+                font-size: 0.9rem;
+                margin-top: 0.2rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .prn-value {
+                background: rgba(0, 0, 0, 0.3);
+                padding: 2px 6px;
+                border-radius: 4px;
+                color: var(--accent-primary);
+                border: 1px dashed var(--border-color);
+            }
+        </style>
+    </div>
+
+    <!-- Utilities Script (Copy + Quiz) -->
+    <script>
+        // 1. Copy to Clipboard
+        document.querySelectorAll('pre').forEach((pre) => {
+            const button = document.createElement('button');
+            button.className = 'copy-btn';
+            button.innerText = 'Copy';
+            pre.appendChild(button);
+
+            button.addEventListener('click', () => {
+                const code = pre.querySelector('code').innerText;
+                navigator.clipboard.writeText(code).then(() => {
+                    button.innerText = 'Copied!';
+                    setTimeout(() => button.innerText = 'Copy', 2000);
+                });
+            });
+        });
+
+        // 2. Quiz Logic
+        function checkQuiz(element, isCorrect) {
+            const allOptions = element.parentElement.children;
+            for (let opt of allOptions) {
+                opt.style.pointerEvents = 'none'; // Disable further clicks
+                if (opt.getAttribute('onclick').includes('true')) {
+                    opt.classList.add('correct'); // Highlight correct answer
+                }
+            }
+            if (!isCorrect) {
+                element.classList.add('incorrect');
+            }
+        }
+        // 3. Sorting Visualizer Logic
+        const sortContainer = document.getElementById('sort-bars');
+        let bars = [];
+        const numBars = 10;
+
+        function resetSort() {
+            sortContainer.innerHTML = '';
+            bars = [];
+            for (let i = 0; i < numBars; i++) {
+                const height = Math.floor(Math.random() * 80) + 20; // 20% to 100%
+                const bar = document.createElement('div');
+                bar.classList.add('bar');
+                bar.style.height = `${height}%`;
+                sortContainer.appendChild(bar);
+                bars.push({ el: bar, val: height });
+            }
+        }
+
+        // Initialize on load
+        resetSort();
+
+        async function startBubbleSort() {
+            // Disable buttons during sort (optional polish)
+
+            for (let i = 0; i < numBars - 1; i++) {
+                for (let j = 0; j < numBars - i - 1; j++) {
+                    // Highlight comparing
+                    bars[j].el.classList.add('active');
+                    bars[j + 1].el.classList.add('active');
+
+                    await new Promise(r => setTimeout(r, 800)); // Delay (Slower for better understanding)
+
+                    if (bars[j].val > bars[j + 1].val) {
+                        // Swap Values
+                        let tempVal = bars[j].val;
+                        bars[j].val = bars[j + 1].val;
+                        bars[j + 1].val = tempVal;
+
+                        // Swap Heights
+                        bars[j].el.style.height = `${bars[j].val}%`;
+                        bars[j + 1].el.style.height = `${bars[j + 1].val}%`;
+                    }
+
+                    // Remove highlight
+                    bars[j].el.classList.remove('active');
+                    bars[j + 1].el.classList.remove('active');
+                }
+                bars[numBars - i - 1].el.classList.add('sorted');
+            }
+            bars[0].el.classList.add('sorted');
+        }
+
+    </script>
+
+    <!-- Parallax Animation Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 2. Parallax Background ---
+            const container = document.getElementById('parallax-bg');
+            const elementCount = 50; // Increased density
+            const symbols = [
+                '{ }', '< >', '</>', '[]', '();', '//', '&&', '||', '!=', '==',
+                'int', 'void', 'return', 'class', 'const', 'if', 'else', 'for',
+                '#include', 'std::', 'cout', 'cin', '0x', '->', '*', '&',
+                'map', 'vector', 'string', 'main', 'true', 'false', 'new', 'delete'
+            ];
+
+            const elements = [];
+
+            // 1. Initialize Elements
+            for (let i = 0; i < elementCount; i++) {
+                const el = document.createElement('div');
+                el.classList.add('code-element');
+                el.classList.add('floating');
+
+                // Random Content
+                el.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+
+                // Peacock Colors (Teal, Blue, Purple, Gold)
+                const colors = [
+                    'rgba(45, 212, 191, 0.4)',  // Teal
+                    'rgba(37, 99, 235, 0.3)',   // Royal Blue
+                    'rgba(168, 85, 247, 0.3)',  // Purple
+                    'rgba(250, 204, 21, 0.3)'   // Gold Accent
+                ];
+                el.style.color = colors[Math.floor(Math.random() * colors.length)];
+                el.style.fontFamily = "'JetBrains Mono', monospace";
+                el.style.textShadow = '0 0 10px ' + el.style.color; // Mystical Glow
+
+                // Random Positioning
+                const x = Math.random() * 100; // vw
+                const y = Math.random() * 100; // vh
+                const depth = Math.random(); // 0 to 1 (1 is closest)
+
+                // Size based on depth (closer = bigger)
+                const size = 12 + (depth * 18); // 12px to 30px
+                el.style.fontSize = `${size}px`;
+
+                // Opacity based on depth
+                el.style.opacity = 0.3 + (depth * 0.4); // Brighter (0.3 to 0.7)
+
+                el.style.left = `${x}vw`;
+                el.style.top = `${y}vh`;
+
+                // Store metadata for parallax
+                const speed = 0.05 + (depth * 0.1); // Closer elements move faster
+
+                // Random Animation Delay
+                el.style.animationDelay = `-${Math.random() * 5}s`;
+                el.style.animationDuration = `${8 + Math.random() * 10}s`; // Slower float
+
+                container.appendChild(el);
+
+                elements.push({
+                    el: el,
+                    speed: speed,
+                    baseX: x,
+                    baseY: y
+                });
+            }
+
+            // 2. Mouse Interaction
+            let mouseX = 0;
+            let mouseY = 0;
+            let targetMouseX = 0;
+            let targetMouseY = 0;
+
+            document.addEventListener('mousemove', (e) => {
+                // Normalized Center Coordinates (-1 to 1)
+                targetMouseX = (e.clientX / window.innerWidth) * 2 - 1;
+                targetMouseY = (e.clientY / window.innerHeight) * 2 - 1;
+            });
+
+            // 3. Animation Loop (Smooth Lerp + Scroll)
+            function animate() {
+                // Smooth Mouse Follow (Lerp)
+                mouseX += (targetMouseX - mouseX) * 0.05;
+                mouseY += (targetMouseY - mouseY) * 0.05;
+
+                const scrollY = window.scrollY;
+
+                elements.forEach(item => {
+                    // Parallax X: Mouse movement * speed
+                    const transX = mouseX * item.speed * 100; // Max 100px move
+
+                    // Parallax Y: Mouse movement + Scroll movement
+                    // Scroll moves elements UP as you scroll DOWN (Parallax effect)
+                    const transY = (mouseY * item.speed * 100) - (scrollY * item.speed * 0.5);
+
+                    item.el.style.transform = `translate(${transX}px, ${transY}px)`;
+                });
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        });
+
+        // --- 4. 3D Code Block Tilt Effect ---
+        document.querySelectorAll('pre').forEach(pre => {
+            pre.addEventListener('mousemove', (e) => {
+                const rect = pre.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                // Calculate rotation (Max +/- 10 degrees)
+                const xRotation = -((y - rect.height / 2) / rect.height * 20);
+                const yRotation = ((x - rect.width / 2) / rect.width * 20);
+
+                // Apply transform
+                pre.style.transform = `perspective(1000px) scale(1.02) rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
+            });
+
+            pre.addEventListener('mouseleave', () => {
+                // Reset
+                pre.style.transform = 'perspective(1000px) scale(1) rotateX(0) rotateY(0)';
+            });
+        });
+    </script>
+</body>
+
+</html>
